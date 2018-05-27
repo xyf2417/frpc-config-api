@@ -56,12 +56,11 @@ public class RegistryConfig extends AbstractConfig {
 		this.type = type;
 	}
 
-	public void setAddress(String address) {
+	public void setAddresses(List<String> addrs) {
 		if(addresses == null) {
 			addresses = new ArrayList<RegistryAddress>();
 		}
-		String [] ads = address.split(",");
-		for(String ad : ads)
+		for(String ad : addrs)
 		{
 			String host = ad.split(":")[0];
 			String port = ad.split(":")[1];
