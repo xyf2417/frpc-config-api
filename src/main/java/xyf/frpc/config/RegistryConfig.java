@@ -5,13 +5,13 @@ import java.util.List;
 
 public class RegistryConfig extends AbstractConfig {
 	
-	public static class RegistryConfigAddress
+	public static class RegistryAddress
 	{
 		private final String host;
 		
 		private final int port;
 		
-		public RegistryConfigAddress(String host, int port)
+		public RegistryAddress(String host, int port)
 		{
 			this.host = host;
 			this.port = port;
@@ -45,7 +45,7 @@ public class RegistryConfig extends AbstractConfig {
 	private String type;
 	
 	
-	private List<RegistryConfigAddress> addresses;
+	private List<RegistryAddress> addresses;
 	
 
 	public String getType() {
@@ -58,7 +58,7 @@ public class RegistryConfig extends AbstractConfig {
 
 	public void setAddress(String address) {
 		if(addresses == null) {
-			addresses = new ArrayList<RegistryConfigAddress>();
+			addresses = new ArrayList<RegistryAddress>();
 		}
 		String [] ads = address.split(",");
 		for(String ad : ads)
@@ -66,11 +66,11 @@ public class RegistryConfig extends AbstractConfig {
 			String host = ad.split(":")[0];
 			String port = ad.split(":")[1];
 			int iport = Integer.valueOf(port);
-			addresses.add(new RegistryConfigAddress(host,iport));
+			addresses.add(new RegistryAddress(host,iport));
 		}
 	}
 	
-	public List<RegistryConfigAddress> getAddresses()
+	public List<RegistryAddress> getAddresses()
 	{
 		return addresses;
 	}
