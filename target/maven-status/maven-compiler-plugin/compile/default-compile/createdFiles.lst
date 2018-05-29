@@ -1,9 +1,12 @@
 xyf\frpc\config\AbstractConfig.class
+xyf\frpc\config\Consumer.class
 xyf\frpc\config\Config.class
 xyf\frpc\config\ProtocolConfig.class
+xyf\frpc\config\Provider.class
 xyf\frpc\config\RegistryConfig$RegistryAddress.class
 xyf\frpc\config\ConfigConstants.class
 xyf\frpc\config\RegistryConfig.class
 xyf\frpc\config\register\ProviderRegister.class
+xyf\frpc\config\Application.class
 xyf\frpc\config\register\zookeeper\ConnectWatcher.class
 xyf\frpc\config\register\zookeeper\ZookeeperProviderRegister.class

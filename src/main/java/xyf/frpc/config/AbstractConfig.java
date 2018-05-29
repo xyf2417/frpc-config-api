@@ -5,7 +5,7 @@ package xyf.frpc.config;
  * @author xyf
  *
  */
-public class AbstractConfig implements Config {
+public abstract class AbstractConfig implements Config {
 
 	/**
 	 * 
