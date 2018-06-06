@@ -32,10 +32,7 @@ public class RegistryConfig extends AbstractConfig {
 			return "Registry(" + host + ":" + port + ")";
 		}
 		
-		/**
-		 * 返回URL格式的字符串
-		 * @return 如127.0.0.1:2181
-		 */
+		
 		public String toUrlFormat() {
 			return host + ":" + port;
 		}

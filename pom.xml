@@ -4,6 +4,10 @@
   <artifactId>frpc-config-api</artifactId>
   <version>0.0.1</version>
   <build/>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <frpc.version>0.0.1</frpc.version>
+  </properties>
   <dependencies>
   	<!-- https://mvnrepository.com/artifact/org.apache.zookeeper/zookeeper -->
 	<dependency>
@@ -11,5 +15,16 @@
 	    <artifactId>zookeeper</artifactId>
 	    <version>3.4.11</version>
 	</dependency>
+	<dependency>
+        <groupId>xyf.frpc</groupId>
+  		<artifactId>frpc-rpc</artifactId>
+        <version>${frpc.version}</version>
+    </dependency>
+    
+    <dependency>
+        <groupId>xyf.frpc</groupId>
+  		<artifactId>frpc-config-spring</artifactId>
+        <version>${frpc.version}</version>
+    </dependency>
   </dependencies>
 </project>

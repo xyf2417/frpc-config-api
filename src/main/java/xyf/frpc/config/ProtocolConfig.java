@@ -1,5 +1,8 @@
 package xyf.frpc.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProtocolConfig extends AbstractConfig {
 
 	/**
@@ -32,5 +35,6 @@ public class ProtocolConfig extends AbstractConfig {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
 	
 }
