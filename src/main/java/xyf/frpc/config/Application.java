@@ -8,6 +8,8 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import xyf.frpc.remoting.server.ProviderServer;
+import xyf.frpc.remoting.server.netty.NettyProviderServer;
 import xyf.frpc.rpc.AbstractInvoker;
 import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
@@ -21,14 +23,14 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 	
 	private static Application application;
 	
+	private ProviderServer providerServer;
+	
 	public static Application getApplication() {
 		return application;
 	}
 	
-	public void initGlobalApplicaiton() {
-		if(application == null){
-			Map<String, Application> applications = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, Application.class, false, false);
-		}
+	public static void setApplication(Application application) {
+		Application.application = application;
 	}
 	
 	Map<String, Provider> knownProviders = new ConcurrentHashMap<String, Provider>();
@@ -85,4 +87,30 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 		this.applicationContext = applicationContext;
 	}
 
+	public ProviderServer getProviderServer() {
+		return providerServer;
+	}
+	
+	public void initProviderServer() {
+		System.out.println("------------------------------Applicaiton initProviderServer");
+		providerServer = new NettyProviderServer();
+		new ServerThread().start();
+		
+	}
+	
+	class ServerThread extends Thread {
+		public void run() {
+			try {
+				System.out.println("------------------------------Applicaiton beforebind");
+				providerServer.bind(8080);
+				System.out.println("------------------------------Applicaiton endbind");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				System.out.println("------------------------------Applicaiton initProviderServer catch");
+			}
+			System.out.println("------------------------------Applicaiton initProviderServer end");
+		}
+	}
 }
+
+

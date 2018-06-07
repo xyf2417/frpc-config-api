@@ -1,11 +1,21 @@
 package xyf.frpc.config;
 
-public class Provider extends AbstractConfig{
+import java.util.Map;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+public class Provider extends AbstractConfig implements InitializingBean, ApplicationContextAware{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6648981211041211555L;
+	
+	private ApplicationContext applicationContext;
 	
 	/**
 	 * The implementation of the proxied interface
@@ -29,6 +39,33 @@ public class Provider extends AbstractConfig{
 
 	public void setInterface(String inter) throws ClassNotFoundException {
 		this.cInterface = Class.forName(inter);
+	}
+
+	public void afterPropertiesSet()  {
+		System.out.println("----------------------------------------provider afterPropertiesSet");
+		try{
+			if(Application.getApplication() == null) {
+				Map<String, Application> applications = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, Application.class, false, false);
+				if(applications == null || applications.size() == 0 ) {
+					throw new RuntimeException("Must has an applicaiton");
+				}
+				if(applications.size() != 1) {
+					throw new RuntimeException("Must has just one application");
+				}
+				Application.setApplication(applications.entrySet().iterator().next().getValue());
+				System.out.println("----------------------------------------provider afterPropertiesSet after setApplication");
+				Application.getApplication().initProviderServer();
+			}
+		}
+		catch(Throwable e) {
+			System.out.println("----------------------------------------provider afterPropertiesSet catch");
+		}
+		
+	}
+
+	public void setApplicationContext(ApplicationContext context)
+			throws BeansException {
+		this.applicationContext = context;
 	}
 	
 }
