@@ -59,19 +59,20 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 		}
 	}
 	
-	public <T> Invoker<T> resolveInovoker(String fullName)
+	public <T> Invoker<T> getInovoker(String fullName)
 	{
+		System.out.println("--Applicaiton getInvoker:" + fullName);
 		if(knownProviders.size() == 0) {
 			initProviders();
 		}
 		if(knownProviders.size() == 0) {
-			//todo no registered providers
+			return null;
 		}
 		
 		Provider provider = knownProviders.get(fullName);
 		
 		if(provider == null) {
-			//todo can't find the registered provider for this interface
+			return null;
 		}
 		
 		Object proxy = proxyFactory.getProxy(provider.getInterface(), provider.getTarget());

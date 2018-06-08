@@ -42,7 +42,6 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 	}
 
 	public void afterPropertiesSet()  {
-		System.out.println("----------------------------------------provider afterPropertiesSet");
 		try{
 			if(Application.getApplication() == null) {
 				Map<String, Application> applications = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, Application.class, false, false);
@@ -53,7 +52,6 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 					throw new RuntimeException("Must has just one application");
 				}
 				Application.setApplication(applications.entrySet().iterator().next().getValue());
-				System.out.println("----------------------------------------provider afterPropertiesSet after setApplication");
 				Application.getApplication().initProviderServer();
 			}
 		}
