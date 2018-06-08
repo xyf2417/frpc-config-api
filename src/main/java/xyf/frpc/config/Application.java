@@ -8,6 +8,8 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import xyf.frpc.config.proxy.JDKProxyFactory;
+import xyf.frpc.config.proxy.ProxyFactory;
 import xyf.frpc.remoting.server.ProviderServer;
 import xyf.frpc.remoting.server.netty.NettyProviderServer;
 import xyf.frpc.rpc.AbstractInvoker;
