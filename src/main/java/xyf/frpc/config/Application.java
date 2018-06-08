@@ -1,5 +1,6 @@
 package xyf.frpc.config;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.proxy.JDKProxyFactory;
 import xyf.frpc.config.proxy.ProxyFactory;
+import xyf.frpc.config.util.ServiceLoader;
 import xyf.frpc.remoting.server.ProviderServer;
 import xyf.frpc.remoting.server.netty.NettyProviderServer;
 import xyf.frpc.rpc.AbstractInvoker;
@@ -96,7 +98,9 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 	
 	public void initProviderServer() {
 		System.out.println("------------------------------Applicaiton initProviderServer");
-		providerServer = new NettyProviderServer();
+		
+		providerServer = ServiceLoader.getService("providerServer");
+		
 		new ServerThread().start();
 		
 	}
