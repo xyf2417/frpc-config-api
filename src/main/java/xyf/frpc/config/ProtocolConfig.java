@@ -19,6 +19,8 @@ public class ProtocolConfig extends AbstractConfig {
 	 * The server port which this server binded to.
 	 */
 	private int port;
+	
+	private String transport;
 
 	public String getName() {
 		return name;
@@ -35,6 +37,17 @@ public class ProtocolConfig extends AbstractConfig {
 	public void setPort(int port) {
 		this.port = port;
 	}
+
+	public String getTransport() {
+		return transport;
+	}
+
+	public void setTransport(String transport) {
+		this.transport = transport;
+	}
 	
+	public String getServerKey() {
+		return "localhost:" + port;
+	}
 	
 }
