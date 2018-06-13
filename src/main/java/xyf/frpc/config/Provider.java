@@ -11,12 +11,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.util.ExtensionLoader;
+import xyf.frpc.remoting.config.ExportInfo;
 import xyf.frpc.remoting.config.Exporter;
 import xyf.frpc.remoting.config.Protocol;
+import xyf.frpc.rpc.AbstractInvoker;
+import xyf.frpc.rpc.DefaultInvoker;
+import xyf.frpc.rpc.proxy.ProxyFactory;
 
 public class Provider extends AbstractConfig implements InitializingBean, ApplicationContextAware{
 
-	private final static Log logger = LogFactory.getLog(getClass());
+	private Object lockObject = new Object();
+	
+	private final static ProxyFactory proxyFactory = (ProxyFactory) ExtensionLoader.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
+	
+	private final static Log logger = LogFactory.getLog(Provider.class);
 	/**
 	 * 
 	 */
@@ -71,16 +79,27 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 			
 			this.protocolConfig = pcs.entrySet().iterator().next().getValue();
 		}
-		synchronized(protocol) {
+		synchronized(lockObject) {
 			if(protocol == null) {
 				protocol = (Protocol) ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
 			}
 		}
-		exporter = protocol.export(interfaceClass.getName(), protocolConfig, this);
+		
+		exporter = export();
 		
 		if(logger.isInfoEnabled()){
 			logger.info("frpc: export " + interfaceClass.getName());
 		}
+	}
+	
+	private Exporter export() {
+		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getTarget());
+		AbstractInvoker<?> invoker = new DefaultInvoker();
+		invoker.setProxy(proxy);
+		invoker.setInterface(this.getInterface());
+		ExportInfo exportInfo = ExportInfo.getLocalExportInfo(this.protocolConfig.getPort());
+		return protocol.export(exportInfo, invoker);
+		
 	}
 
 	public void setApplicationContext(ApplicationContext context)

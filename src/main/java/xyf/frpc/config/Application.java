@@ -1,21 +1,13 @@
 package xyf.frpc.config;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import xyf.frpc.config.proxy.JDKProxyFactory;
-import xyf.frpc.config.proxy.ProxyFactory;
 import xyf.frpc.remoting.server.ProviderServer;
-import xyf.frpc.remoting.server.netty.NettyProviderServer;
-import xyf.frpc.rpc.AbstractInvoker;
-import xyf.frpc.rpc.DefaultInvoker;
-import xyf.frpc.rpc.Invoker;
 
 public class Application extends AbstractConfig implements ApplicationContextAware{
 
@@ -40,7 +32,6 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 	
 	private ApplicationContext applicationContext;
 	
-	private ProxyFactory proxyFactory = new JDKProxyFactory();
 	
 	private String name;
 
