@@ -19,15 +19,11 @@ import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
 public class Provider extends AbstractConfig implements InitializingBean, ApplicationContextAware{
-
-	private Object lockObject = new Object();
 	
 	private final static ProxyFactory proxyFactory = (ProxyFactory) ExtensionLoader.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
 	
 	private final static Log logger = LogFactory.getLog(Provider.class);
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6648981211041211555L;
 	
 	private ApplicationContext applicationContext;
@@ -35,7 +31,7 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 	/**
 	 * The implementation of the proxied interface
 	 */
-	private Object target;
+	private Object ref;
 	
 	
 	private Class interfaceClass;
@@ -46,12 +42,12 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 	
 	private Exporter<?> exporter;
 
-	public Object getTarget() {
-		return target;
+	public Object getRef() {
+		return ref;
 	}
 
-	public void setTarget(Object target) {
-		this.target = target;
+	public void setRef(Object ref) {
+		this.ref = ref;
 	}
 
 	public Class getInterface() {
@@ -79,21 +75,20 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 			
 			this.protocolConfig = pcs.entrySet().iterator().next().getValue();
 		}
-		synchronized(lockObject) {
-			if(protocol == null) {
-				protocol = (Protocol) ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
-			}
+		
+		if(protocol == null) {
+			protocol = (Protocol) ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
 		}
 		
 		exporter = export();
 		
 		if(logger.isInfoEnabled()){
-			logger.info("frpc: export " + interfaceClass.getName());
+			logger.info("frpc: exported " + interfaceClass.getName());
 		}
 	}
 	
 	private Exporter export() {
-		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getTarget());
+		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getRef());
 		AbstractInvoker<?> invoker = new DefaultInvoker();
 		invoker.setProxy(proxy);
 		invoker.setInterface(this.getInterface());
