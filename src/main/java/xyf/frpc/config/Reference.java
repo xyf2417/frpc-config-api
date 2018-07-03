@@ -32,6 +32,8 @@ public class Reference extends AbstractConfig {
 	private Object ref;
 
 	private Class interfaceClass;
+	
+	private String host;
 
 	public Class getInterface() {
 		return interfaceClass;
@@ -86,5 +88,13 @@ public class Reference extends AbstractConfig {
 	public void setApplicationContext(ApplicationContext context)
 			throws BeansException {
 		this.applicationContext = context;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 }
