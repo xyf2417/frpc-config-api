@@ -88,7 +88,7 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 	}
 	
 	private Exporter export() {
-		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getRef());
+		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getRef(), true);
 		AbstractInvoker<?> invoker = new DefaultInvoker();
 		invoker.setProxy(proxy);
 		invoker.setInterface(this.getInterface());
