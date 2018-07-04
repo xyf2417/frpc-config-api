@@ -6,13 +6,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 
 import xyf.frpc.config.util.ExtensionLoader;
+import xyf.frpc.remoting.RpcException;
+import xyf.frpc.remoting.client.FrpcInvoker;
+import xyf.frpc.remoting.config.BindInfo;
 import xyf.frpc.remoting.config.Protocol;
+import xyf.frpc.rpc.DefaultInvoker;
+import xyf.frpc.rpc.Invoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
-public class Reference extends AbstractConfig {
+public class Reference extends AbstractConfig implements FactoryBean {
 
 	private static final long serialVersionUID = 1L;
 
@@ -74,7 +80,21 @@ public class Reference extends AbstractConfig {
 			protocol = (Protocol) ExtensionLoader.getExtensionLoader(
 					Protocol.class).getExtension(protocolConfig.getName());
 		}
-
+		BindInfo bindInfo = new BindInfo();
+		bindInfo.setIp(this.getHost());
+		bindInfo.setPort(protocolConfig.getPort());
+		
+		Invoker invoker = new DefaultInvoker();
+		invoker.setInterface(interfaceClass);
+				
+		FrpcInvoker frpcInvoker = null;
+		try {
+			frpcInvoker = (FrpcInvoker) protocol.refer(bindInfo, invoker);
+		} catch (RpcException e) {
+			logger.error("frpc: reference refer error");
+		}
+		
+		ref = proxyFactory.getProxy(interfaceClass, frpcInvoker, false);
 	}
 
 	public String getName() {
@@ -96,5 +116,14 @@ public class Reference extends AbstractConfig {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public Object getObject() throws Exception {
+		return ref;
+	}
+
+	public Class getObjectType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
