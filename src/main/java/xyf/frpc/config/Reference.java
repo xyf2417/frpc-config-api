@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 
 import xyf.frpc.config.util.ExtensionLoader;
@@ -18,7 +19,7 @@ import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
-public class Reference extends AbstractConfig implements FactoryBean {
+public class Reference extends AbstractConfig implements FactoryBean, InitializingBean {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +36,7 @@ public class Reference extends AbstractConfig implements FactoryBean {
 
 	private String name;
 
-	private Object ref;
+	private volatile Object ref;
 
 	private Class interfaceClass;
 	
@@ -54,35 +55,39 @@ public class Reference extends AbstractConfig implements FactoryBean {
 		}
 	}
 
-	public void init() throws FrpcIlleConfigException {
+	public void init() throws FrpcIllegalConfigException {
 		if (ref != null) {
 			return;
 		}
+		Object thisObject = this;
 		// find the protocolConfig from the applicationContext
-		if (protocolConfig == null) {
+		/*if (protocolConfig == null) {
 			Map<String, ProtocolConfig> pcs = applicationContext == null ? null
 					: BeanFactoryUtils.beansOfTypeIncludingAncestors(
 							applicationContext, ProtocolConfig.class, false,
 							false);
 			if (pcs == null || pcs.size() == 0) {
-				throw new FrpcIlleConfigException("Must has a <frpc:protocol/>");
-			}
-			if (pcs.size() != 1) {
-				throw new FrpcIlleConfigException(
+				this.protocolConfig = applicationContext.getBean(ProtocolConfig.class);
+			} else if (pcs.size() != 1) {
+				throw new FrpcIllegalConfigException(
 						"Just one <frpc:protocol/> are allowed, but find "
 								+ pcs.size() + " tags");
+			} else {
+				this.protocolConfig = pcs.entrySet().iterator().next().getValue();
 			}
-
-			this.protocolConfig = pcs.entrySet().iterator().next().getValue();
-		}
+			
+			if(protocolConfig == null) {
+				throw new FrpcIllegalConfigException("Must has a <frpc:protocol/>");
+			}
+		}*/
 
 		if (protocol == null) {
 			protocol = (Protocol) ExtensionLoader.getExtensionLoader(
-					Protocol.class).getExtension(protocolConfig.getName());
+					Protocol.class).getExtension("frpc");//protocolConfig.getName());
 		}
 		BindInfo bindInfo = new BindInfo();
 		bindInfo.setIp(this.getHost());
-		bindInfo.setPort(protocolConfig.getPort());
+		bindInfo.setPort(8080);//protocolConfig.getPort());
 		
 		Invoker invoker = new DefaultInvoker();
 		invoker.setInterface(interfaceClass);
@@ -108,6 +113,7 @@ public class Reference extends AbstractConfig implements FactoryBean {
 	public void setApplicationContext(ApplicationContext context)
 			throws BeansException {
 		this.applicationContext = context;
+		System.out.println("-----------------------------------sac");
 	}
 
 	public String getHost() {
@@ -119,11 +125,20 @@ public class Reference extends AbstractConfig implements FactoryBean {
 	}
 
 	public Object getObject() throws Exception {
+		System.out.println("---------------------------------------geto");
+		if(ref == null) {
+			init();
+		}
 		return ref;
 	}
 
 	public Class getObjectType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		//getObject();
+		System.out.println("-------------------rerernce aps");
 	}
 }

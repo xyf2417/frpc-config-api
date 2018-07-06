@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import xyf.frpc.config.FrpcIlleConfigException;
+import xyf.frpc.config.FrpcIllegalConfigException;
 
 public class ExtensionLoader<T> {
 	
@@ -92,7 +92,7 @@ public class ExtensionLoader<T> {
 							classes.put(serviceName, clazzService);
 						}
 					} else {
-						throw new FrpcIlleConfigException("The extension config of " + type.getName() +" is not correct");
+						throw new FrpcIllegalConfigException("The extension config of " + type.getName() +" is not correct");
 					}
 		        }			
 			}

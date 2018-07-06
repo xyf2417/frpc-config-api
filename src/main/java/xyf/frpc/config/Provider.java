@@ -62,15 +62,15 @@ public class Provider extends AbstractConfig implements InitializingBean, Applic
 		}
 	}
 
-	public void afterPropertiesSet() throws FrpcIlleConfigException  {
+	public void afterPropertiesSet() throws FrpcIllegalConfigException  {
 		//find the protocolConfig from the applicationContext
 		if(protocolConfig == null) {
 			Map<String, ProtocolConfig> pcs = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
 			if(pcs == null || pcs.size() == 0 ) {
-				throw new FrpcIlleConfigException("Must has a <frpc:protocol/>");
+				throw new FrpcIllegalConfigException("Must has a <frpc:protocol/>");
 			}
 			if(pcs.size() != 1) {
-				throw new FrpcIlleConfigException("Just one <frpc:protocol/> are allowed, but find " + pcs.size() + " tags");
+				throw new FrpcIllegalConfigException("Just one <frpc:protocol/> are allowed, but find " + pcs.size() + " tags");
 			}
 			
 			this.protocolConfig = pcs.entrySet().iterator().next().getValue();
