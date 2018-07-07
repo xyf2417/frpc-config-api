@@ -28,7 +28,7 @@ public class Application extends AbstractConfig implements ApplicationContextAwa
 		Application.application = application;
 	}
 	
-	Map<String, Provider> knownProviders = new ConcurrentHashMap<String, Provider>();
+	Map<String, Service> knownProviders = new ConcurrentHashMap<String, Service>();
 	
 	private ApplicationContext applicationContext;
 	

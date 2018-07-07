@@ -18,11 +18,11 @@ import xyf.frpc.rpc.AbstractInvoker;
 import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
-public class Provider extends AbstractConfig implements InitializingBean, ApplicationContextAware{
+public class Service extends AbstractConfig implements InitializingBean, ApplicationContextAware{
 	
 	private final static ProxyFactory proxyFactory = (ProxyFactory) ExtensionLoader.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
 	
-	private final static Log logger = LogFactory.getLog(Provider.class);
+	private final static Log logger = LogFactory.getLog(Service.class);
 
 	private static final long serialVersionUID = 6648981211041211555L;
 	
