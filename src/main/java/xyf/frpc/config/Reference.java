@@ -1,11 +1,8 @@
 package xyf.frpc.config;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
