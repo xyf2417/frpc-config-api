@@ -37,7 +37,7 @@ public class ExtensionLoader<T> {
 	
 	
 	@SuppressWarnings("unchecked")
-	public static <T> ExtensionLoader<T> getExtensionLoader(Class<?> type) {
+	public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
 		ExtensionLoader<T> extension = (ExtensionLoader<T>) CACHED_LOADERS.get(type);
 		if(extension == null) {
 			extension = new ExtensionLoader<T>(type);

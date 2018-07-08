@@ -79,4 +79,15 @@ public class RegistryConfig extends AbstractConfig {
 		return addresses;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder("Registry(");
+		for(RegistryAddress address : addresses) {
+			res.append(address);
+			res.append(",");
+		}
+		res.replace(res.length() - 1, res.length(), ")");
+		return res.toString(); 
+	}
+	
 }

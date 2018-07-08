@@ -48,4 +48,9 @@ public class ProtocolConfig extends AbstractConfig {
 		return "localhost:" + port;
 	}
 	
+	@Override
+	public String toString() {
+		return "ProtocolConfig:" + this.getName();
+	}
+	
 }

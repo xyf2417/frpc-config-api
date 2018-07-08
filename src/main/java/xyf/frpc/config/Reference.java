@@ -1,11 +1,17 @@
 package xyf.frpc.config;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.util.ExtensionLoader;
 import xyf.frpc.remoting.RpcException;
@@ -16,11 +22,11 @@ import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
-public class Reference extends AbstractConfig implements FactoryBean, InitializingBean {
+public class Reference extends AbstractConfig implements FactoryBean, InitializingBean, ApplicationContextAware {
 
 	private static final long serialVersionUID = 1L;
 
-	private final static ProxyFactory proxyFactory = (ProxyFactory) ExtensionLoader
+	private final static ProxyFactory proxyFactory = ExtensionLoader
 			.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
 
 	private final static Log logger = LogFactory.getLog(Reference.class);
@@ -38,6 +44,8 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 	private Class interfaceClass;
 	
 	private String host;
+	
+	private int port;
 
 	public Class getInterface() {
 		return interfaceClass;
@@ -56,9 +64,8 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 		if (ref != null) {
 			return;
 		}
-		Object thisObject = this;
 		// find the protocolConfig from the applicationContext
-		/*if (protocolConfig == null) {
+		if (protocolConfig == null) {
 			Map<String, ProtocolConfig> pcs = applicationContext == null ? null
 					: BeanFactoryUtils.beansOfTypeIncludingAncestors(
 							applicationContext, ProtocolConfig.class, false,
@@ -76,15 +83,15 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 			if(protocolConfig == null) {
 				throw new FrpcIllegalConfigException("Must has a <frpc:protocol/>");
 			}
-		}*/
+		}
 
 		if (protocol == null) {
-			protocol = (Protocol) ExtensionLoader.getExtensionLoader(
-					Protocol.class).getExtension("frpc");//protocolConfig.getName());
+			protocol = ExtensionLoader.getExtensionLoader(
+					Protocol.class).getExtension(protocolConfig.getName());
 		}
 		BindInfo bindInfo = new BindInfo();
 		bindInfo.setIp(this.getHost());
-		bindInfo.setPort(8080);//protocolConfig.getPort());
+		bindInfo.setPort(this.getPort());
 		
 		Invoker invoker = new DefaultInvoker();
 		invoker.setInterface(interfaceClass);
@@ -107,11 +114,7 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 		this.name = name;
 	}
 
-	public void setApplicationContext(ApplicationContext context)
-			throws BeansException {
-		this.applicationContext = context;
-		System.out.println("-----------------------------------sac");
-	}
+	
 
 	public String getHost() {
 		return host;
@@ -122,20 +125,43 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 	}
 
 	public Object getObject() throws Exception {
-		System.out.println("---------------------------------------geto");
 		if(ref == null) {
 			init();
 		}
 		return ref;
 	}
 
-	public Class getObjectType() {
-		// TODO Auto-generated method stub
-		return null;
+
+
+	public void setApplicationContext(ApplicationContext context)
+			throws BeansException {
+		this.applicationContext = context;
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		//getObject();
-		System.out.println("-------------------rerernce aps");
+		
+	}
+
+	public Class getObjectType() {
+		return Reference.class;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder("Reference: ");
+		res.append(interfaceClass.getSimpleName());
+		res.append("->");
+		res.append(host);
+		res.append(":");
+		res.append(port);
+		return res.toString(); 
 	}
 }

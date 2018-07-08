@@ -20,7 +20,7 @@ import xyf.frpc.rpc.proxy.ProxyFactory;
 
 public class Service extends AbstractConfig implements InitializingBean, ApplicationContextAware{
 	
-	private final static ProxyFactory proxyFactory = (ProxyFactory) ExtensionLoader.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
+	private final static ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getExtension("jdk");
 	
 	private final static Log logger = LogFactory.getLog(Service.class);
 
@@ -77,7 +77,7 @@ public class Service extends AbstractConfig implements InitializingBean, Applica
 		}
 		
 		if(protocol == null) {
-			protocol = (Protocol) ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
+			protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
 		}
 		
 		exporter = export();
@@ -100,6 +100,13 @@ public class Service extends AbstractConfig implements InitializingBean, Applica
 	public void setApplicationContext(ApplicationContext context)
 			throws BeansException {
 		this.applicationContext = context;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder("Service: ");
+		res.append(interfaceClass.getSimpleName());
+		return res.toString(); 
 	}
 	
 }
