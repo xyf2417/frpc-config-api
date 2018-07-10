@@ -101,6 +101,7 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 			frpcInvoker = (FrpcInvoker) protocol.refer(bindInfo, invoker);
 		} catch (RpcException e) {
 			logger.error("frpc: reference refer error");
+			e.printStackTrace();
 		}
 		
 		ref = proxyFactory.getProxy(interfaceClass, frpcInvoker, false);

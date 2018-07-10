@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.util.ExtensionLoader;
+import xyf.frpc.remoting.RpcException;
 import xyf.frpc.remoting.config.ExportInfo;
 import xyf.frpc.remoting.config.Exporter;
 import xyf.frpc.remoting.config.Protocol;
@@ -80,14 +81,19 @@ public class Service extends AbstractConfig implements InitializingBean, Applica
 			protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolConfig.getName());
 		}
 		
-		exporter = export();
+		try {
+			exporter = export();
+		} catch (RpcException e) {
+			logger.error("frpc: service " + this.interfaceClass.getName() + " export error");
+			e.printStackTrace();
+		}
 		
 		if(logger.isInfoEnabled()){
 			logger.info("frpc: exported " + interfaceClass.getName());
 		}
 	}
 	
-	private Exporter export() {
+	private Exporter export() throws RpcException {
 		Object proxy = proxyFactory.getProxy(this.getInterface(), this.getRef(), true);
 		AbstractInvoker<?> invoker = new DefaultInvoker();
 		invoker.setProxy(proxy);
