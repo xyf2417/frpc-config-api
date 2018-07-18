@@ -5,8 +5,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,12 +12,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.util.ExtensionLoader;
-import xyf.frpc.remoting.RpcException;
 import xyf.frpc.remoting.client.FrpcInvoker;
 import xyf.frpc.remoting.config.BindInfo;
 import xyf.frpc.remoting.config.Protocol;
 import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
+import xyf.frpc.rpc.RpcException;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
 public class Reference extends AbstractConfig implements FactoryBean, InitializingBean, ApplicationContextAware {
