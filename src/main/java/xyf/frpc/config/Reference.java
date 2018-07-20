@@ -17,6 +17,7 @@ import xyf.frpc.remoting.config.BindInfo;
 import xyf.frpc.remoting.config.Protocol;
 import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
+import xyf.frpc.rpc.MockInvoker;
 import xyf.frpc.rpc.RpcException;
 import xyf.frpc.rpc.proxy.ProxyFactory;
 
@@ -44,6 +45,8 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 	private String host;
 	
 	private int port;
+	
+	private Object mock;
 
 	public Class getInterface() {
 		return interfaceClass;
@@ -102,7 +105,15 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 			e.printStackTrace();
 		}
 		
-		ref = proxyFactory.getProxy(interfaceClass, frpcInvoker, false);
+		if(mock != null) {
+			MockInvoker mockInvoker = new MockInvoker(frpcInvoker);
+			mockInvoker.setInterface(interfaceClass);
+			mockInvoker.setProxy(mock);
+			
+			ref = proxyFactory.getProxy(interfaceClass, mockInvoker, false);
+		} else {
+			ref = proxyFactory.getProxy(interfaceClass, frpcInvoker, false);
+		}
 	}
 
 	public String getName() {
@@ -162,5 +173,13 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 		res.append(":");
 		res.append(port);
 		return res.toString(); 
+	}
+
+	public Object getMock() {
+		return mock;
+	}
+
+	public void setMock(Object mock) {
+		this.mock = mock;
 	}
 }
