@@ -47,6 +47,8 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 	private int port;
 	
 	private Object mock;
+	
+	private Object stub;
 
 	public Class getInterface() {
 		return interfaceClass;
@@ -181,5 +183,13 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 
 	public void setMock(Object mock) {
 		this.mock = mock;
+	}
+
+	public Object getStub() {
+		return stub;
+	}
+
+	public void setStub(Object stub) {
+		this.stub = stub;
 	}
 }
