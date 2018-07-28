@@ -12,14 +12,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import xyf.frpc.config.util.ExtensionLoader;
-import xyf.frpc.remoting.client.FrpcInvoker;
 import xyf.frpc.remoting.config.BindInfo;
 import xyf.frpc.remoting.config.Protocol;
 import xyf.frpc.rpc.DefaultInvoker;
 import xyf.frpc.rpc.Invoker;
 import xyf.frpc.rpc.MockInvoker;
 import xyf.frpc.rpc.RpcException;
+import xyf.frpc.rpc.StubInvoker;
 import xyf.frpc.rpc.proxy.ProxyFactory;
+import xyf.frpc.rpc.proxy.StubProxyFactoryWrapper;
 
 public class Reference extends AbstractConfig implements FactoryBean, InitializingBean, ApplicationContextAware {
 
@@ -48,7 +49,8 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 	
 	private Object mock;
 	
-	private Object stub;
+	private Class stubClass;
+	
 
 	public Class getInterface() {
 		return interfaceClass;
@@ -96,26 +98,37 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 		bindInfo.setIp(this.getHost());
 		bindInfo.setPort(this.getPort());
 		
-		Invoker invoker = new DefaultInvoker();
-		invoker.setInterface(interfaceClass);
-				
-		FrpcInvoker frpcInvoker = null;
+		Invoker forFrpcinvoker = new DefaultInvoker();
+		forFrpcinvoker.setInterface(interfaceClass);
+		Invoker invoker = null;
+		
 		try {
-			frpcInvoker = (FrpcInvoker) protocol.refer(bindInfo, invoker);
+			invoker = protocol.refer(bindInfo, forFrpcinvoker);
 		} catch (RpcException e) {
 			logger.error("frpc: reference refer error");
 			e.printStackTrace();
 		}
 		
 		if(mock != null) {
-			MockInvoker mockInvoker = new MockInvoker(frpcInvoker);
+			MockInvoker mockInvoker = new MockInvoker(invoker);
 			mockInvoker.setInterface(interfaceClass);
 			mockInvoker.setProxy(mock);
 			
-			ref = proxyFactory.getProxy(interfaceClass, mockInvoker, false);
-		} else {
-			ref = proxyFactory.getProxy(interfaceClass, frpcInvoker, false);
+			invoker = mockInvoker;
 		}
+		
+		
+		if(stubClass != null) {
+			StubInvoker stubInvoker = new StubInvoker(invoker, stubClass);
+			
+			ProxyFactory stubProxyFactory = new StubProxyFactoryWrapper(proxyFactory);
+			ref = stubProxyFactory.getProxy(interfaceClass, stubInvoker, false);
+		}
+		else
+		{
+			ref = proxyFactory.getProxy(interfaceClass, invoker, false);
+		}
+		
 	}
 
 	public String getName() {
@@ -185,11 +198,11 @@ public class Reference extends AbstractConfig implements FactoryBean, Initializi
 		this.mock = mock;
 	}
 
-	public Object getStub() {
-		return stub;
+	public Class getStubClass() {
+		return stubClass;
 	}
 
-	public void setStub(Object stub) {
-		this.stub = stub;
+	public void setStubClass(Class stubClass) {
+		this.stubClass = stubClass;
 	}
 }
